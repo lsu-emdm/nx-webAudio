@@ -1,0 +1,116 @@
+<html>
+	<head>
+		<script src="lib/nexusUI.js"></script>
+		<script>
+
+			/****************
+			* THE WEB AUDIO *
+			****************/
+		
+			// Create Web Audio Context
+			
+			context = new webkitAudioContext();
+			
+			//create DSP blocks
+			
+			//carrier
+			mySine = context.createOscillator();
+			mySine.start(0);
+
+			//mod
+			mySine2 = context.createOscillator();
+			mySine2.frequency = 100;
+			mySine2.start(0);
+			
+			fm = context.createScriptProcessor(4096,2,1);
+
+			carriergain = context.createGain();
+			carriergain.gain.value = 0.1;
+
+			delay = context.createDelay();
+			delay.delayTime = 0.1;
+			delaygain = context.createGain();
+			delaygain.gain.value = 0.9;
+
+			//make connections
+
+			mySine2.connect(fm);
+			fm.connect(mySine.frequency);
+			mySine.connect(delay);
+			delay.connect(carriergain);
+			delay.connect(delaygain);
+			delaygain.connect(delay);
+
+			// define carrier variables
+
+			var carrier = {
+				depth: 1,
+				freq: 100
+			}
+
+			// do FM math that will be sent into mySine.frequency
+
+			var phasor = 0;
+
+			fm.onaudioprocess = function(e) {
+
+			    var inputData = e.inputBuffer.getChannelData(0);
+			    var outputData = e.outputBuffer.getChannelData(0);
+			    phasor += 0.1;
+
+			    // Loop through the 4096 samples
+			    for (var sample = 0; sample < e.inputBuffer.length; sample++) {
+			        outputData[sample] = ( inputData[sample] * carrier.depth ) + carrier.freq + (Math.sin(phasor));
+			        phasor += 0.001;
+			    }
+
+			}
+
+
+
+			/****************
+			*  THE NEXUSUI  *
+			****************/
+		
+			
+			nx.onload = function() {
+
+				nx.colorize("#9cf")
+				nx.colorize("fill", "#444")
+				nx.colorize("border", "#aaa")
+				nx.colorize("black", "#aaa")
+
+
+				// fires each time the slider is interacted with
+				slider1.on('*', function(data) {
+					carriergain.gain.value = data.value/5;
+				})
+
+				// fires each time the position is interacted with
+				position1.on('*', function(data) {
+					mySine2.frequency.linearRampToValueAtTime(data.x*1000, context.currentTime + .2);
+					carrier.depth = data.y * 10000;
+				})
+
+				// fires each time the toggle is interacted with
+				toggle1.on('*', function(data) {
+					if (data.value) {
+						carriergain.connect(context.destination)
+					} else {
+						carriergain.disconnect(context.destination)
+					}
+				})
+
+			}
+
+		</script>
+	</head>
+
+	<body style="background-color:#777">
+
+		<canvas nx="toggle"></canvas>
+		<canvas nx="slider" style="width:250px;height:50px"></canvas><br>
+		<canvas nx="position" style="width:800px;height:400px"></canvas>
+
+	</body>
+</html>
