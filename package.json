@@ -1,0 +1,22 @@
+{
+  "name": "nx-webaudio",
+  "version": "1.2.0",
+  "description": "nx-webAudio is a demo of using nexusui with a simple webaudio",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lsu-emdm/nx-webAudio.git"
+  },
+  "author": "taylorbf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lsu-emdm/nx-webAudio/issues"
+  },
+  "homepage": "https://github.com/lsu-emdm/nx-webAudio#readme",
+  "dependencies": {
+    "nexusui": "^1.2.0"
+  }
+}
