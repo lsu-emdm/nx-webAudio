@@ -1,18 +1,18 @@
 <html>
 	<head>
-		<script src="lib/nexusUI.js"></script>
+		<script src="node_modules/nexusui/dist/nexusUI.js"></script>
 		<script>
 
 			/****************
 			* THE WEB AUDIO *
 			****************/
-		
+
 			// Create Web Audio Context
-			
-			context = new webkitAudioContext();
-			
+
+			context = new AudioContext();
+
 			//create DSP blocks
-			
+
 			//carrier
 			mySine = context.createOscillator();
 			mySine.start(0);
@@ -21,7 +21,7 @@
 			mySine2 = context.createOscillator();
 			mySine2.frequency = 100;
 			mySine2.start(0);
-			
+
 			fm = context.createScriptProcessor(4096,2,1);
 
 			carriergain = context.createGain();
@@ -71,8 +71,8 @@
 			/****************
 			*  THE NEXUSUI  *
 			****************/
-		
-			
+
+
 			nx.onload = function() {
 
 				nx.colorize("#9cf")
